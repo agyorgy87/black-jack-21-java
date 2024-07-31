@@ -16,29 +16,22 @@ public class GameController {
     @PostMapping(
             path = "/api/game"
     )
-    public boolean createPlayer(@RequestBody Game game) {
-        gameRepository.save(game);
-        return true;
-        //object return?
+    public Game createPlayer(@RequestBody Game game) {
+        game = gameRepository.save(game);
+        return game;
     }
 
 
-    /*
     @GetMapping(
-            path = "/get-player-data/{playerNickName}"
+            path = "/get-game-id/{gameId}"
     )
-    public Game searchByName(@PathVariable String playerNickName) {
-        Optional<Game> game = GameRepository.findByNameContaining(playerNickName);
-        if(game.isEmpty()) {
+    public Game searchById(@PathVariable int gameId ) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isEmpty()) {
             //throw new IdNotFoundException("name not found");
             return null;
-        }else{
+        } else {
             return game.get();
         }
     }
-    */
-
-    @GetMapping(path = "/get-player-data/{playerNickName}")
-    public List<Game> findPlayerName(@PathVariable String playerNickName) {
-        return GameRepository.findByPlayerName(playerNickName);
-    }
+}
