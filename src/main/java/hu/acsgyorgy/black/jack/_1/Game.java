@@ -27,4 +27,9 @@ public class Game {
     private int cardSum;
 
     private boolean finished;
+
+    private String winner;
+
+    private int enemyCardSum;
+
 }
