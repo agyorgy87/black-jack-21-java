@@ -24,7 +24,7 @@ public class GameController {
         return game;
     }
 
-
+/*
     @GetMapping(
             path = "/get-game-id/{gameId}"
     )
@@ -37,6 +37,19 @@ public class GameController {
             return game.get();
         }
     }
+*/
+
+    @GetMapping(path = "/get-game-id/{gameId}")
+    public ResponseEntity<Game> searchById(@PathVariable int gameId) {
+        Optional<Game> game = gameRepository.findById(gameId);
+        if (game.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);//404
+        } else {
+            return ResponseEntity.ok(game.get());//200
+            //return ResponseEntity.status(HttpStatus.OK).body(game.get());
+        }
+    }
+
 
     @PostMapping(
             path = "/hit-card/{gameId}"
@@ -62,16 +75,13 @@ public class GameController {
         Optional<Game> game = gameRepository.findById(gameId);
         if(game.isPresent()) {
             Game setGameOver = game.get();
-            int enemyCard = (int)(Math.random() * 40) + 1;
-            //int randomCardNumber = (int)(Math.random() * 40) + 1;
-            /*
+            int randomCardNumber = (int)(Math.random() * 21) + 1;
             int enemyCard;
             if(randomCardNumber < 16){
                 enemyCard = randomCardNumber + ((int)(Math.random() * 11) + 1);
             } else {
                 enemyCard = randomCardNumber;
             }
-             */
             int playerCardSum = game.get().getCardSum();
             if(playerCardSum < 21 && enemyCard > 21) {
                 setGameOver.setWinner("Player winner");
@@ -92,6 +102,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
+
     @GetMapping(
             path = "/game-over/"
     )
@@ -102,7 +113,6 @@ public class GameController {
         gameRepository.save(setGameOver);
         return setGameOver;
     }
-
 }
 
 /*

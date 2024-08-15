@@ -1,6 +1,5 @@
 package hu.acsgyorgy.black.jack._1;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
