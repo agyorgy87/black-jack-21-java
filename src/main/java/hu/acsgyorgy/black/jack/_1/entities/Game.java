@@ -1,4 +1,4 @@
-package hu.acsgyorgy.black.jack._1;
+package hu.acsgyorgy.black.jack._1.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
