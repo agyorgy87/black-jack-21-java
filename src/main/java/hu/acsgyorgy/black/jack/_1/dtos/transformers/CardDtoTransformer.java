@@ -7,6 +7,9 @@ public class CardDtoTransformer {
 
     public CardDto transform (Card card) {
         CardDto cardDto = new CardDto();
+        cardDto.setId(card.getId());
+        cardDto.setCardType(card.getCardType());
+        cardDto.setDeckName(card.getDeck().getName());
         return cardDto;
     }
 
