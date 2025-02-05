@@ -15,6 +15,6 @@ public class DeckDto {
 
     private int id;
 
-    private List<String> card;
+    private List<CardDto> cards;
 
 }

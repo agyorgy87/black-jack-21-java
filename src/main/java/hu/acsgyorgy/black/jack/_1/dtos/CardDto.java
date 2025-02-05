@@ -10,6 +10,4 @@ public class CardDto {
 
     private int id;
 
-    private String deckName;
-
 }

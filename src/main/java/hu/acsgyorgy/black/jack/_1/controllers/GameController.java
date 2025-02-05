@@ -83,7 +83,7 @@ public class GameController {
                 enemyCard = randomCardNumber;
             }
             int playerCardSum = game.get().getCardSum();
-            if(playerCardSum < 21 && enemyCard > 21) {
+            if(playerCardSum < 22 && enemyCard > 21) {
                 setGameOver.setWinner("Player winner");
             } else if (enemyCard < 21 && playerCardSum > 21) {
                 setGameOver.setWinner("Enemy Winner");
@@ -102,7 +102,7 @@ public class GameController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
-
+/*
     @GetMapping(
             path = "/game-over/"
     )
@@ -113,16 +113,6 @@ public class GameController {
         gameRepository.save(setGameOver);
         return setGameOver;
     }
+    */
 }
 
-/*
-            if(enemyCard > 21) {
-                setGameOver.setWinner("Player winner");
-            } else if(playerCardSum > enemyCard) {
-                setGameOver.setWinner("Player winner");
-            } else if(enemyCard > playerCardSum) {
-                setGameOver.setWinner("Enemy winner");
-            } else {
-                setGameOver.setWinner("Draw");
-            }
- */
