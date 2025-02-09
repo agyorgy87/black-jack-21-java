@@ -19,6 +19,8 @@ import java.util.Optional;
 public class CardController {
 
     @Autowired
+    private CardDtoTransformer cardDtoTransformer;
+    @Autowired
     private CardRepository cardRepository;
 
     @GetMapping(path = "/card/by-id/{id}")
@@ -27,7 +29,6 @@ public class CardController {
         if (card.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);//404
         } else {
-            CardDtoTransformer cardDtoTransformer = new CardDtoTransformer();
             CardDto cardDto = cardDtoTransformer.transform(card.get());
             return ResponseEntity.ok(cardDto);
             //return ResponseEntity.ok(card.get());//200

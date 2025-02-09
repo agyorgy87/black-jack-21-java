@@ -14,6 +14,8 @@ public class Card {
 
     private String cardType;
 
+    private boolean pulledOut;
+
     @Id
     private int id;
 

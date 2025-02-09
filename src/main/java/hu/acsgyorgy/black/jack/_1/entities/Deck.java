@@ -5,6 +5,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,10 @@ import java.util.List;
 public class Deck {
 
     private String name;
+
+    private Date gameStarted;
+
+    private boolean inGame;
 
     @Id
     private int id;

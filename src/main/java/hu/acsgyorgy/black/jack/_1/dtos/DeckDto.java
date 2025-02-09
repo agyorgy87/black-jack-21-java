@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,10 @@ public class DeckDto {
     private String name;
 
     private int id;
+
+    private Date gameStarted;
+
+    private boolean inGame;
 
     private List<CardDto> cards;
 
