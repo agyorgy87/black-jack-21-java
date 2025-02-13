@@ -1,15 +1,16 @@
 package hu.acsgyorgy.black.jack._1.controllers;
 
+import hu.acsgyorgy.black.jack._1.entities.Card;
+import hu.acsgyorgy.black.jack._1.respositories.CardRepository;
 import hu.acsgyorgy.black.jack._1.respositories.DeckRepository;
 import hu.acsgyorgy.black.jack._1.entities.Deck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -20,6 +21,9 @@ public class DeckController {
     @Autowired
     private DeckRepository deckRepository;
 
+    @Autowired
+    private CardRepository cardRepository;
+
     @GetMapping(path = "/deck/by-id/{id}")
     public ResponseEntity<Deck> mainDeck(@PathVariable int id) {
         Optional<Deck> deck = deckRepository.findById(id);
@@ -29,5 +33,33 @@ public class DeckController {
             return ResponseEntity.ok(deck.get());//200
             //return ResponseEntity.status(HttpStatus.OK).body(game.get());
         }
+    }
+
+    @PostMapping(path = "/deck/create/{deckName}")
+    public ResponseEntity<Deck> createDeck(@PathVariable String deckName) {
+        Deck deck = new Deck();
+        deck.setName(deckName);
+        List<Card> cards = new ArrayList<>();
+        /*
+        Card card = new Card();
+        card.setCardType("heart_3");
+        card.setDeck(deck);
+        cards.add(card);
+        */
+        String[] types = {"heart", "spade", "club", "diamond"};
+        String[] numbers = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+
+        for (String type : types) {
+            for (String number : numbers) {
+                Card card = new Card();
+                card.setCardType(type + "_" + number);
+                card.setDeck(deck);
+                cards.add(card);
+            }
+        }
+
+        deck.setCards(cards);
+        deckRepository.save(deck);
+        return ResponseEntity.ok(deck);
     }
 }
