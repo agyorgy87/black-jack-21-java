@@ -1,5 +1,8 @@
 package hu.acsgyorgy.black.jack._1.controllers;
 
+import hu.acsgyorgy.black.jack._1.dtos.CardDto;
+import hu.acsgyorgy.black.jack._1.dtos.DeckDto;
+import hu.acsgyorgy.black.jack._1.dtos.transformers.CardDtoTransformer;
 import hu.acsgyorgy.black.jack._1.entities.Card;
 import hu.acsgyorgy.black.jack._1.respositories.CardRepository;
 import hu.acsgyorgy.black.jack._1.respositories.DeckRepository;
@@ -24,6 +27,9 @@ public class DeckController {
     @Autowired
     private CardRepository cardRepository;
 
+    @Autowired
+    private CardDtoTransformer cardDtoTransformer;
+
     @GetMapping(path = "/deck/by-id/{id}")
     public ResponseEntity<Deck> mainDeck(@PathVariable int id) {
         Optional<Deck> deck = deckRepository.findById(id);
@@ -36,16 +42,11 @@ public class DeckController {
     }
 
     @PostMapping(path = "/deck/create/{deckName}")
-    public ResponseEntity<Deck> createDeck(@PathVariable String deckName) {
+    public ResponseEntity<DeckDto> createDeck(@PathVariable String deckName) {
+        DeckDto deckDto = new DeckDto();
         Deck deck = new Deck();
         deck.setName(deckName);
         List<Card> cards = new ArrayList<>();
-        /*
-        Card card = new Card();
-        card.setCardType("heart_3");
-        card.setDeck(deck);
-        cards.add(card);
-        */
         String[] types = {"heart", "spade", "club", "diamond"};
         String[] numbers = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 
@@ -60,6 +61,8 @@ public class DeckController {
 
         deck.setCards(cards);
         deckRepository.save(deck);
-        return ResponseEntity.ok(deck);
+        List<CardDto> CardDtoList = cardDtoTransformer.transform(cards);
+        deckDto.setCards(CardDtoList);
+        return ResponseEntity.ok(deckDto);
     }
 }

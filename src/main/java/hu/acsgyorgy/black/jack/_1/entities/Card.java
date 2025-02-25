@@ -1,8 +1,5 @@
 package hu.acsgyorgy.black.jack._1.entities;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +14,7 @@ public class Card {
     private boolean pulledOut;
 
     @Id
+    @GeneratedValue
     private int id;
 
     @ManyToOne

@@ -1,17 +1,35 @@
 package hu.acsgyorgy.black.jack._1.controllers;
+import hu.acsgyorgy.black.jack._1.dtos.CardDto;
+import hu.acsgyorgy.black.jack._1.dtos.transformers.CardDtoTransformer;
+import hu.acsgyorgy.black.jack._1.entities.Card;
+import hu.acsgyorgy.black.jack._1.entities.Deck;
 import hu.acsgyorgy.black.jack._1.entities.Game;
+import hu.acsgyorgy.black.jack._1.respositories.CardRepository;
+import hu.acsgyorgy.black.jack._1.respositories.DeckRepository;
 import hu.acsgyorgy.black.jack._1.respositories.GameRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class GameController {
+
+    @Autowired
+    private CardDtoTransformer cardDtoTransformer;
+
+    @Autowired
+    private CardRepository cardRepository;
+
+    @Autowired
+    private DeckRepository deckRepository;
 
     @Autowired
     private GameRepository gameRepository;
@@ -48,6 +66,19 @@ public class GameController {
             return ResponseEntity.ok(game.get());//200
             //return ResponseEntity.status(HttpStatus.OK).body(game.get());
         }
+    }
+
+    @PostMapping(path = "/game/pull-unpulled-card/{deckId}")
+    public ResponseEntity<CardDto> unpulledCard(@PathVariable int deckId) {
+        List<Card> cards = new ArrayList<>();
+        Optional<Deck> deck = deckRepository.findById(deckId);
+        cards = cardRepository.findAllByPulledOutFalseAndDeck(deck.get());
+        Random random = new Random();
+        Card randomCard = cards.get(random.nextInt(cards.size()));
+        randomCard.setPulledOut(true);
+        CardDto cardDto = cardDtoTransformer.transform(randomCard);
+        cardRepository.save(randomCard);
+        return ResponseEntity.ok(cardDto);
     }
 
 

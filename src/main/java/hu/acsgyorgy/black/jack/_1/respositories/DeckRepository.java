@@ -12,6 +12,4 @@ import java.util.Optional;
 public interface DeckRepository extends JpaRepository<Deck,Integer> {
     Optional<Deck> findById(int id);
 
-
-
 }

@@ -1,7 +1,5 @@
 package hu.acsgyorgy.black.jack._1.entities;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,9 +18,10 @@ public class Deck {
     private boolean inGame;
 
     @Id
+    @GeneratedValue
     private int id;
 
-    @OneToMany(mappedBy = "deck")
+    @OneToMany(mappedBy = "deck", cascade = CascadeType.ALL)
     private List<Card> cards;
 
     @OneToMany(mappedBy = "deck")

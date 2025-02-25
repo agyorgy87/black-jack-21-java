@@ -10,4 +10,5 @@ public interface GameRepository extends JpaRepository<Game,Integer> {
     Optional<Game> findById(int id);
 
 
+
 }
