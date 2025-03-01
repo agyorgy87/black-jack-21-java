@@ -16,7 +16,6 @@ public class Game {
 
     @Id
     @GeneratedValue
-
     private int id;
 
     private String playerName;
