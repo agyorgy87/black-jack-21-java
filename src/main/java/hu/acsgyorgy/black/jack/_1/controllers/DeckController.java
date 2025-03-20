@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,11 +42,13 @@ public class DeckController {
         }
     }
 
+    //.
+
     @PostMapping(path = "/deck/create/{deckName}")
-    public ResponseEntity<DeckDto> createDeck(@PathVariable String deckName) {
+    public ResponseEntity<DeckDto> createDeck() {
         DeckDto deckDto = new DeckDto();
         Deck deck = new Deck();
-        deck.setName(deckName);
+        //függvény hivás
         List<Card> cards = new ArrayList<>();
         String[] types = {"heart", "spade", "club", "diamond"};
         String[] numbers = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -59,8 +62,16 @@ public class DeckController {
             }
         }
 
+
+        Date startDate = new Date();
+        deck.setGameStarted(startDate);
         deck.setCards(cards);
+        deck.setInGame(true);
         deckRepository.save(deck);
+        deckDto.setId(deck.getId());
+        deckDto.setName(deck.getName());
+        deckDto.setGameStarted(deck.getGameStarted());
+        deckDto.setInGame(deck.isInGame());
         List<CardDto> CardDtoList = cardDtoTransformer.transform(cards);
         deckDto.setCards(CardDtoList);
         return ResponseEntity.ok(deckDto);
