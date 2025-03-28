@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -42,13 +39,49 @@ public class DeckController {
         }
     }
 
-    //.
+    public String randomCardName() {
 
-    @PostMapping(path = "/deck/create/{deckName}")
+        String[] adjectives = {
+                "happy", "sad", "angry", "excited", "brave", "calm", "bold", "shy", "kind", "cruel",
+                "strong", "weak", "fast", "slow", "smart", "dumb", "rich", "poor", "hardworking", "lazy",
+                "funny", "serious", "friendly", "rude", "loyal", "unfaithful", "honest", "dishonest", "gentle", "harsh",
+                "bright", "dark", "warm", "cold", "soft", "hard", "smooth", "rough", "clean", "dirty",
+                "beautiful", "ugly", "tall", "short", "big", "small", "thin", "fat", "narrow", "wide",
+                "loud", "quiet", "early", "late", "new", "old", "modern", "ancient", "fresh", "stale",
+                "sweet", "bitter", "salty", "sour", "spicy", "bland", "tasty", "disgusting", "hungry", "full",
+                "strong-willed", "weak-minded", "courageous", "fearful", "ambitious", "lazy", "grateful", "ungrateful", "optimistic", "pessimistic",
+                "creative", "unimaginative", "generous", "selfish", "reliable", "unreliable", "polite", "impolite", "cheerful", "gloomy",
+                "energetic", "tired", "helpful", "useless", "productive", "wasteful", "organized", "messy", "determined", "indecisive"
+        };
+
+        String[] nouns = {
+                "apple", "banana", "car", "dog", "elephant", "flower", "guitar", "house", "island", "jacket",
+                "kangaroo", "lamp", "mountain", "notebook", "ocean", "pencil", "queen", "river", "sun", "tree",
+                "umbrella", "violin", "window", "xylophone", "yacht", "zebra", "book", "chair", "desk", "egg",
+                "forest", "garden", "hat", "ice", "jungle", "kite", "lion", "moon", "nest", "octopus",
+                "piano", "quilt", "robot", "sandwich", "turtle", "unicorn", "volcano", "whale", "x-ray", "yogurt",
+                "zeppelin", "airport", "bridge", "candle", "diamond", "engine", "fountain", "globe", "hammer", "igloo",
+                "jewel", "key", "ladder", "mirror", "necklace", "orchestra", "palace", "quicksand", "rainbow", "suitcase",
+                "ticket", "underpass", "vase", "waterfall", "xenon", "yard", "zeppelin", "alligator", "butterfly", "chocolate",
+                "dolphin", "earthquake", "fireworks", "grapefruit", "hamburger", "iceberg", "jigsaw", "kitchen", "lighthouse", "mermaid",
+                "nightingale", "oatmeal", "penguin", "quasar", "rocket", "snowflake", "treasure", "universe", "vulture", "windmill"
+        };
+
+        Random random = new Random();
+        String adjective = adjectives[random.nextInt(adjectives.length)];
+        String noun = nouns[random.nextInt(nouns.length)];
+
+        return adjective + " " + noun;
+    }
+
+    @PostMapping(path = "/deck/create")
     public ResponseEntity<DeckDto> createDeck() {
         DeckDto deckDto = new DeckDto();
         Deck deck = new Deck();
-        //függvény hivás
+
+        String randomName = randomCardName();
+        deck.setName(randomName);
+
         List<Card> cards = new ArrayList<>();
         String[] types = {"heart", "spade", "club", "diamond"};
         String[] numbers = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
@@ -68,12 +101,15 @@ public class DeckController {
         deck.setCards(cards);
         deck.setInGame(true);
         deckRepository.save(deck);
+
         deckDto.setId(deck.getId());
         deckDto.setName(deck.getName());
         deckDto.setGameStarted(deck.getGameStarted());
         deckDto.setInGame(deck.isInGame());
+
         List<CardDto> CardDtoList = cardDtoTransformer.transform(cards);
         deckDto.setCards(CardDtoList);
+
         return ResponseEntity.ok(deckDto);
     }
 }
