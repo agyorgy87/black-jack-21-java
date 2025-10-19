@@ -26,4 +26,5 @@ public class Deck {
 
     @OneToMany(mappedBy = "deck")
     private List<Player> player;
+
 }

@@ -1,5 +1,6 @@
 package hu.acsgyorgy.black.jack._1.controllers;
 import hu.acsgyorgy.black.jack._1.dtos.CardDto;
+import hu.acsgyorgy.black.jack._1.dtos.PullCardDto;
 import hu.acsgyorgy.black.jack._1.dtos.transformers.CardDtoTransformer;
 import hu.acsgyorgy.black.jack._1.entities.Card;
 import hu.acsgyorgy.black.jack._1.entities.Deck;
@@ -68,23 +69,37 @@ public class GameController {
         }
     }
 
-    @PostMapping(path = "/game/pull-unpulled-card/{deckId}")
-    public ResponseEntity<CardDto> unpulledCard(@PathVariable int deckId) {
-        List<Card> cards = new ArrayList<>();
-        Optional<Deck> deck = deckRepository.findById(deckId);
-        cards = cardRepository.findAllByPulledOutFalseAndDeck(deck.get());
+    @PostMapping(path = "/game/pull-unpulled-card")
+    public ResponseEntity<CardDto> unpulledCard(@RequestBody PullCardDto pullCardDto) {
+        Optional<Deck> deck = deckRepository.findById(pullCardDto.getDeckId());
+        Optional<Game> gameObj = gameRepository.findById(pullCardDto.getGameId());
+        /*
+        System.out.println("Received deckId: " + pullCardDto.getDeckId());
+        System.out.println("Received gameId: " + pullCardDto.getGameId());
+
+        System.out.println("Deck found: " + deck.isPresent());
+        System.out.println("Game found: " + gameObj.isPresent());
+
+        if (!deck.isPresent() || !gameObj.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null); // vagy ResponseEntity.badRequest().build();
+        }
+        */
+        List<Card> cards = cardRepository.findAllByPulledOutFalseAndDeck(deck.get());
         Random random = new Random();
         Card randomCard = cards.get(random.nextInt(cards.size()));
         randomCard.setPulledOut(true);
         CardDto cardDto = cardDtoTransformer.transform(randomCard);
         cardRepository.save(randomCard);
+        int randomCardValue = this.convertToInt(randomCard.getCardType());
+        int currentlySum = gameObj.get().getCardSum();
+        gameObj.get().setCardSum(currentlySum + randomCardValue);
+        gameRepository.save(gameObj.get());
+
         return ResponseEntity.ok(cardDto);
     }
 
-
-    @PostMapping(
-            path = "/hit-card/{gameId}"
-    )
+    @PostMapping(path = "/hit-card/{gameId}")
     public ResponseEntity<Game> hitCard(@PathVariable int gameId) {
         Optional<Game> game = gameRepository.findById(gameId);
         int randomCardNumber = (int)(Math.random() * 11) + 1;
@@ -99,9 +114,7 @@ public class GameController {
         }
     }
 
-    @GetMapping(
-            path = "/show-cards/{gameId}"
-    )
+    @GetMapping(path = "/show-cards/{gameId}")
     public ResponseEntity<Game> showAllCard(@PathVariable int gameId) {
         Optional<Game> game = gameRepository.findById(gameId);
         if(game.isPresent()) {
@@ -131,6 +144,39 @@ public class GameController {
             return ResponseEntity.ok(setGameOver);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    private Integer convertToInt (String cardValue) {
+        String[] array = cardValue.split("_");
+        String cardNumber = array[1];
+        if(cardNumber.equals("2")){
+            return 2;
+        } else if(cardNumber.equals("3")){
+            return 3;
+        } else if(cardNumber.equals("4")){
+            return 4;
+        } else if(cardNumber.equals("5")){
+            return 5;
+        } else if(cardNumber.equals("6")){
+            return 6;
+        } else if(cardNumber.equals("7")){
+            return 7;
+        } else if(cardNumber.equals("8")){
+            return 8;
+        } else if(cardNumber.equals("9")){
+            return 9;
+        } else if(cardNumber.equals("10")){
+            return 10;
+        } else if(cardNumber.equals("J")){
+            return 10;
+        } else if(cardNumber.equals("Q")){
+            return 10;
+        } else if(cardNumber.equals("K")){
+            return 10;
+        } else if(cardNumber.equals("A")){
+            return 11;
+        }
+        return 0;
     }
 
 /*

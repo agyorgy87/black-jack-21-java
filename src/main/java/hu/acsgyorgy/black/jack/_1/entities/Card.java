@@ -13,6 +13,7 @@ public class Card {
 
     private boolean pulledOut;
 
+
     @Id
     @GeneratedValue
     private int id;
