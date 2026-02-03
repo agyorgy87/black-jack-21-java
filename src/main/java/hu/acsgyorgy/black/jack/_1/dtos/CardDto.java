@@ -12,4 +12,6 @@ public class CardDto {
 
     private boolean pulledOut;
 
+    private int currentGameSum;
+
 }

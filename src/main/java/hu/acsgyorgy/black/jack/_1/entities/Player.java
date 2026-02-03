@@ -17,6 +17,10 @@ public class Player {
 
     private String name;
 
+    private int playerCardSum;
+
+    //private int coin;
+
     @ManyToOne
     @JoinColumn(name = "deck_id")
     private Deck deck;

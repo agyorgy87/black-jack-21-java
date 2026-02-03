@@ -1,6 +1,7 @@
 package hu.acsgyorgy.black.jack._1.controllers;
 import hu.acsgyorgy.black.jack._1.dtos.CardDto;
 import hu.acsgyorgy.black.jack._1.dtos.PullCardDto;
+import hu.acsgyorgy.black.jack._1.dtos.TurnResultDto;
 import hu.acsgyorgy.black.jack._1.dtos.transformers.CardDtoTransformer;
 import hu.acsgyorgy.black.jack._1.entities.Card;
 import hu.acsgyorgy.black.jack._1.entities.Deck;
@@ -89,12 +90,15 @@ public class GameController {
         Random random = new Random();
         Card randomCard = cards.get(random.nextInt(cards.size()));
         randomCard.setPulledOut(true);
+
         CardDto cardDto = cardDtoTransformer.transform(randomCard);
         cardRepository.save(randomCard);
+
         int randomCardValue = this.convertToInt(randomCard.getCardType());
         int currentlySum = gameObj.get().getCardSum();
         gameObj.get().setCardSum(currentlySum + randomCardValue);
         gameRepository.save(gameObj.get());
+
 
         return ResponseEntity.ok(cardDto);
     }
@@ -114,6 +118,26 @@ public class GameController {
         }
     }
 
+    @PostMapping(path = "/turn-result")
+    public String turnResult(@RequestBody TurnResultDto turnResultDto) {
+        int playerPoint = turnResultDto.getPlayerPoint();
+        int dealerPoint = turnResultDto.getDealerPoint();
+
+        if(playerPoint == 21) {
+            return "BLACK JACK";
+        }else if(playerPoint > 21) {
+            return "BUST";
+        } else if(playerPoint > dealerPoint && playerPoint < 21) {
+            return "Player win";
+        } else if(dealerPoint > playerPoint && dealerPoint < 21) {
+            return "Dealer win";
+        } else {
+            return ("PUSH");
+        }
+    }
+
+
+/*
     @GetMapping(path = "/show-cards/{gameId}")
     public ResponseEntity<Game> showAllCard(@PathVariable int gameId) {
         Optional<Game> game = gameRepository.findById(gameId);
@@ -145,6 +169,7 @@ public class GameController {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
+*/
 
     private Integer convertToInt (String cardValue) {
         String[] array = cardValue.split("_");
